@@ -1,0 +1,46 @@
+<head>
+  <h1>Login</h1>
+  <script type="text/javascript">
+    function store(){
+var username = document.getElementById("email").value;
+console.log(username);
+var password = document.getElementById("pass").value;
+console.log(password);
+var userObj={
+  userName:username,
+  password:password
+};
+var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      //document.getElementById("demo").innerHTML = this.responseText;
+      console.log(this.responseText);
+    }
+  };
+  xhttp.open("POST", "/api/login", true);
+  xhttp.setRequestHeader("Content-type", "application/json");
+  xhttp.send(JSON.stringify(userObj));
+    }
+  </script>
+</head>
+
+<body>
+<div class="">
+  <form class="" >
+    <label for=""> Email address</label>
+    <input type="text" id="email">
+    <br>
+    <label for="">password</label>
+    <input type="password" id ="pass">
+    <br>
+    <button type="button" name="Submit" value="Submit" onclick="store()" >Login</button>
+  </form>
+<a href ="/forgotpass.html"> Forgot Password</a>
+</div>
+
+<div class="">
+
+<a  href ="/register.html" > Register</a>
+
+</div>
+</body>

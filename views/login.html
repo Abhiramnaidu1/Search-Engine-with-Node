@@ -1,13 +1,15 @@
 <head>
   <h1>Login</h1>
   <script type="text/javascript">
+
+
     function store(){
 var username = document.getElementById("email").value;
 console.log(username);
 var password = document.getElementById("pass").value;
 console.log(password);
 var userObj={
-  userName:username,
+  username:username,
   password:password
 };
 var xhttp = new XMLHttpRequest();
@@ -17,11 +19,11 @@ var xhttp = new XMLHttpRequest();
       console.log(this.responseText);
     }
   };
-  xhttp.open("POST", "/api/login", true);
+  xhttp.open("POST", "/api/authenticate", true);
   xhttp.setRequestHeader("Content-type", "application/json");
   xhttp.send(JSON.stringify(userObj));
     }
-  </script>
+  </script> -->
 </head>
 
 <body>

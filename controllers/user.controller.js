@@ -1,53 +1,48 @@
 const mongoose = require('mongoose');
 const passport = require('passport');
-
+var User = mongoose.model('User');
 const crypto =require('crypto');
 const nodemailer = require('nodemailer');
 const buf = require('buf');
 const async = require('async');
 const bcrypt = require('bcryptjs');
+
 module.exports.register = (req, res, next) => {
     var user = new User();
     user.fullName = req.body.fullName;
     user.email = req.body.email;
     user.password = req.body.password;
-
     user.save((err, doc) => {
-        if (!err)
+        if (!err){
+        var smtpTrans = nodemailer.createTransport({
+           service: 'Gmail',
+           auth: {
+            user: 'abhiram.kankipati@gmail.com',
+            pass: 'Abhi@8885946996'
+          }
+        });
+        console.log('step 3')
+
+          smtpTrans.sendMail({
+            from: 'abhiram.kankipati@gmail.com',
+            to:user.email,
+            subject:'Account confirmation',
+            text:'Hi'+user.fullName+'\n\n'+'To confirm email press below link :\n\n' +
+              'http://localhost:3000/login.html?token=' + user.email + '\n\n',
+
+          });
+          console.log('Email Send');
             res.send(doc);
-            function(token, user, done) {
-                console.log('step 2')
-
-              var smtpTrans = nodemailer.createTransport({
-                 service: 'Gmail',
-                 auth: {
-                  user: 'abhiram.kankipati@gmail.com',
-                  pass: 'Abhi@8885946996'
-                }
-              });
-              console.log('step 3')
-
-                smtpTrans.sendMail({
-                  from: 'abhiram.kankipati@gmail.com',
-                  to:user.email,
-                  subject:'Account confirmation',
-                  text:'Hi'+user.fullname+'\n\n'+'You are recieving this email as you have registered to Search Engine. click on below link to verify your email' +
-                    'http://localhost:3000/verify.html?token=' + token + '\n\n' ,
-
-                });
-                console.log('Email Send');
-        }
-        else {
+          }
+              else {
             if (err.code == 11000)
                 res.status(422).send(['Duplicate email adrress found.']);
-
             else
                 return next(err);
         }
 
     });
 }
-
 
 module.exports.authenticate = (req, res, next) => {
    // call for passport authentication

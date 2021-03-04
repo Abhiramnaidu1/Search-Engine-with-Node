@@ -1,37 +1,40 @@
 <head>
-  <h2>Register</h2>
-  <script type="text/javascript">
-    function registration(){
-      var fullname = document.getElementById("FullName").value;
-      console.log(fullname);
-      var email = document.getElementById("email").value;
-console.log(email);
-var password = document.getElementById("pass").value;
-console.log(password);
-var userObj={
-  fullName:fullname,
-  email:email,
-  password:password
-};
-var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      //document.getElementById("demo").innerHTML = this.responseText;
-      console.log(this.responseText);
-    }
-  };
-  xhttp.open("POST", "/api/register", true);
-  xhttp.setRequestHeader("Content-type", "application/json");
-  xhttp.send(JSON.stringify(userObj));
-    }
-  </script>
+  <center>
+  <h1>Register</h1>
+  </center>
+   <link rel="stylesheet"  type="text/css" href="css/login.css">
+   <script type="text/javascript">
+     function registration(){
+       var fullname = document.getElementById("FullName").value;
+       console.log(fullname);
+       var email = document.getElementById("email").value;
+ console.log(email);
+ var password = document.getElementById("pass").value;
+ console.log(password);
+ var userObj={
+   fullName:fullname,
+   email:email,
+   password:password
+ };
+ var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+       //document.getElementById("demo").innerHTML = this.responseText;
+       console.log(this.responseText);
+     }
+   };
+   xhttp.open("POST", "/api/register", true);
+   xhttp.setRequestHeader("Content-type", "application/json");
+   xhttp.send(JSON.stringify(userObj));
+     }
+     </script>
 </head>
   <body>
-
+<center>
 
   <div class="">
     <form class="">
-      <label for=""> Full Name</label>
+      <label for=""> Full Name  </label>
       <input type="text" id="FullName">
       <br>
       <label for=""> Email address</label>
@@ -47,4 +50,5 @@ var xhttp = new XMLHttpRequest();
     <a  href ="/login.html" > Login</a>
 
   </div>
+  </center>
   </body>

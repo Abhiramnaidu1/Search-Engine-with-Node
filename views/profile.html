@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <script>
+      window.onload= function(){
+var token=localStorage.getItem("token");
+if(token==undefined){
+  window.location.href = 'login.html';
+}
+  var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        //document.getElementById("demo").innerHTML = this.responseText;
+        console.log(this.responseText)
+      }
+      else
+      if (this.readyState == 2 && this.status == 404)
+       {alert("Invalid credentials");}
+
+    };
+    xhttp.open("GET", "/api/userProfile", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.setRequestHeader("authorization","token "+token);
+    xhttp.send();
+  }
+
+    </script>
+
+  </head>
+
+  <body>
+ <label for="">Name:</label>
+    <input type="text" name="" value="">
+    <br>
+    <button type="button" name="button">change</button>
+    <br>
+    <br>
+    <label for="">Email:</label>
+    <input type="text" name="" value="">
+    <br>
+    <button type="button" name="button">change</button>
+    <br><br>
+    <button type="button" href="reset.html">change password</button>
+  </body>
+</html>

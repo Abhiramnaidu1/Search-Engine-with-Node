@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(passport.initialize());
 app.use('/api', rtsIndex);
-app.set('view-engine','ejs');
+
 
 app.use(express.static('views'));
 app.use(express.static('css'));

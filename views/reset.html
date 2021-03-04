@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+
+    <title>reset</title>
+    <script type="text/javascript">
+
+
+      function reset(){
+  var password = document.getElementById("password").value;
+  var conf_password = document.getElementById("conf_password").value;
+  console.log(password);
+
+
+var userObj={
+    password: password,
+    conf_password: conf_password
+
+  };
+  var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        //document.getElementById("demo").innerHTML = this.responseText;
+        console.log(this.responseText);
+      }
+};
+
+    xhttp.open("POST", "/api/reset", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(JSON.stringify(userObj));
+  }
+
+    </script>
+  </head>
+  <body>
+    <label for="">New Password</label>
+    <input type="text" id="password" value="">
+    <label for="">Confirm Password</label>
+    <input type="text" id="conf_password" value="">
+    <button type="button" onclick="reset()">submit</button>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<%- include('partials/header') %>
+<div class="form-container">
+  <div align="right" class="form-group">
+
+      <button class="btn btn-info"> <a href="/register"  >Register </a></button>
+      <button class="btn btn-warning" type="button">  <a href="/login"  >Login</a></button>
+  </div>
+
+    <h2>Search Engine</h2>
+    <% if(locals.error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+    <% if(locals.success) { %>
+        <div class="alert alert-success"><%= success %></div>
+    <% } %>
+
+        <div class="form-group">
+
+            <input type="text" placeholder="search a book" id="title" class="form-control" />
+            <button type="button" class="btn btn-primary" onclick="searchTitles()" name="button">Go</button>
+        </div>
+
+        <div class="titles">
+
+        </div>
+        <div class="count">
+
+        </div>
+
+        <p>Matching Results</p>
+        <div class="results">
+
+        </div>
+
+</div>
+<script type="text/javascript">
+
+    window.onload=  function searchTitles(){
+
+    var title = localStorage.getItem('title');
+
+    console.log('serp',title);
+    var userObj={
+      'title': title
+
+    }
+    var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          // window.location.href='/index';
+           // document.getElementById("demo").innerHTML = this.responseText;
+          console.log(this.responseText);
+          var response=JSON.parse(this.responseText);
+          var hits=response.hits.hits;
+          var results=document.getElementsByClassName('results')[0];
+
+          var titles = document.getElementsByClassName('titles')[0];
+          titles.innerHTML='<p> searching for: '+userObj.title+'</p>';
+          var k=1;
+          var count=response.hits.total.value;
+          var counts=document.getElementsByClassName('count')[0]
+          counts.setAttribute('class','item');
+          counts.innerHTML='<p>'+'Total matches:'+count+'</p>';
+          for (var i in hits){
+            var div=document.createElement('div');
+
+
+            div.setAttribute('class','item');
+            div.innerHTML='<p>'+k+') '+'<a href=/api/users/getbook/'+hits[i]._id+'>'+hits[i]._source.title+'\n'+'</a></p>';
+            k+=1;
+            results.appendChild(div);
+          }
+
+        }
+  };
+
+      xhttp.open("GET", "/api/users/search?title="+title, true);
+     xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send();
+
+}
+function searchTitles(){
+  localStorage.setItem('title',document.getElementById("title").value);
+   window.location.href='/api/users/serp';
+ }
+
+</script>
+<%- include('partials/footer') %>

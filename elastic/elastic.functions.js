@@ -79,7 +79,8 @@ const client = new Client({ node: 'http://localhost:9200' });
                 match: {
                     title: titlename
                 }
-            }
+            },
+              size:"10000"
         }
     });
 
@@ -95,8 +96,10 @@ async function advsearch(userObj) {
             bool: {
                must: []
                    }
-                }
+                },
+                size:"10000"
             }
+
 };
 
 var must=searchQuery.body.query.bool.must;

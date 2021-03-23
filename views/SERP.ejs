@@ -19,6 +19,7 @@
             <input type="text" placeholder="search a book" id="title" class="form-control" />
             <button type="button" class="btn btn-primary" onclick="searchTitles()" name="button">Go</button>
         </div>
+<strong>
 
         <div class="titles">
 
@@ -28,11 +29,15 @@
         </div>
 
         <p>Matching Results</p>
-        <div class="results">
+        <div class="pagination">
+          <div class="results">
 
+          </div>
         </div>
 
+</strong>
 </div>
+
 <script type="text/javascript">
 
     window.onload=  function searchTitles(){
@@ -85,4 +90,5 @@ function searchTitles(){
  }
 
 </script>
+
 <%- include('partials/footer') %>

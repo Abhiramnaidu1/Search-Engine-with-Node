@@ -1,0 +1,35 @@
+<div class="row m-5">
+    <div class="p-5">
+
+        <div class="col-lg-12 doc-middle-content">
+
+            <h2><%= bookinfo.title %></h2><br>
+            <strong>Committee Member(s) : </strong><p><%= bookinfo.contributor_committeemember %></p><br>
+            <strong>Department : </strong><p><%= bookinfo.contributor_department %></p><br>
+            <strong>Date Issued : </strong><p><%= bookinfo.date_issued %></p><br>
+            <strong>Degree : </strong><p><%= bookinfo.degree_name %></p><br>
+            <strong>Abstract : </strong><p><%= bookinfo.description_abstract %></p><br>
+            <strong>Publisher : </strong><p><%= bookinfo.publisher %></p><br>
+            <strong>Subject(s) : </strong><p><%= bookinfo.subject %></p><br>
+              <strong>Source URL : </strong><p>  <a href ="<%= bookinfo.identifier_sourceurl %>">URL</a></p><br>
+                <strong>document URI: </strong><p><a href ="<%= bookinfo.identifier_uri %>">URL</a></p><br>
+            <!-- <strong>Author : </strong><span><?php  echo printArrayValue($doc['_source']['contributor_author']);?></span><br>
+            <strong>Committee Chair(s) : </strong><span><?php
+                if(isset($doc['_source']['contributor_committeechair'])){
+                    echo printArrayValue($doc['_source']['contributor_committeechair']);
+                }else if (isset($doc['_source']['contributor_committeecochair'])){
+                    echo printArrayValue($doc['_source']['contributor_committeecochair']);
+                }
+
+            ?></span><br>
+            <strong>Committee Member(s) : </strong><span><?php  echo printArrayValue($doc['_source']['contributor_committeemember']);?></span><br>
+            <strong>Department : </strong><span><?php  echo printArrayValue($doc['_source']['contributor_department']);?></span><br>
+            <strong>Date Issued : </strong><span><?php  echo printArrayValue($doc['_source']['date_issued']);?></span><br>
+            <strong>Degree : </strong><span><?php  echo printArrayValue($doc['_source']['degree_name']);?></span><br>
+            <strong>Abstract : </strong><span><?php  echo printArrayValue($doc['_source']['description_abstract']);?></span><br>
+            <strong>Publisher : </strong><span><?php  echo printArrayValue($doc['_source']['publisher']);?></span><br>
+            <strong>Subject(s) : </strong><span><?php  echo printArrayValue($doc['_source']['subject']);?></span> -->
+
+        </div>
+    </div>
+</div>

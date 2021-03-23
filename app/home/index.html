@@ -3,7 +3,7 @@
 <h1 align="center">SEARCH ENGINE</h1>
 
 <div class="form-group" >
-     <input type ="text" id="title" class="col-md-6" placeholder = "Search here">
+     <input type ="text" id="title" class="col-md-6" align="center" placeholder = "Search here">
 
      <button class="btn btn-primary" onclick="advsearch()" type="submit" name="button">go</button>
      <!-- <button class ="search-btn" type="button"> </button> -->
@@ -22,6 +22,7 @@
                              </div>
                          </div>
                      </div>
+                     <strong>
                      <div class="titles">
 
                      </div>
@@ -29,11 +30,11 @@
 
                      </div>
 
-                     <p>Matching Results</p>
+
                      <div class="results">
 
                      </div>
-
+</strong>
                      <script type="text/javascript">
                            function advsearch(){
                              var userObj={
@@ -58,12 +59,12 @@
                                  results.innerHTML="";
 
                                  var titles = document.getElementsByClassName('titles')[0];
-                                 titles.innerHTML='<p> searching for: '+userObj.title+'</p>';
+                                 titles.innerHTML='<p> Searching for: '+userObj.title+'</p>';
                                  var k=1;
                                  var count=response.hits.total.value;
                                  var counts=document.getElementsByClassName('count')[0];
-                                 
-                                 counts.innerHTML='<p>'+'Total matches:'+count+'</p>';
+
+                                 counts.innerHTML='<p>'+'Total matches:'+count+'<br /> Matching Results:</p>';
                                  for (var i in hits){
                                    var div=document.createElement('div');
 

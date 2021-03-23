@@ -19,6 +19,7 @@ router.get('/serp',serp)
 router.get('/initial',initial)
 router.get('/getbook/:_id',getTitle)
 router.post('/advsearch',advsearch)
+ // router.get('/bookinfo',bookinfo)
 module.exports = router;
 
 function authenticateUser(req, res) {
@@ -150,7 +151,14 @@ function getTitle(req,res){
   elastic.getTitle(id)
 
   .then(function (response) {
-      res.status(200).redirect(response.hits.hits[0]._source.identifier_uri);
+    console.log(response)
+    var book = response.hits.hits[0]._source
+      console.log(book.title)
+      res.status(200).render("bookinfo",{bookinfo:book});
+      //.hits.hits[0]._source
+      //.render('bookinfo',{book:book })
+
+      //.send(response.hits.hits[0]._source);
   })
   .catch(function (err) {
       res.status(400).send(err);
@@ -170,3 +178,15 @@ elastic.advsearch(reqObj)
 });
 
 }
+// function bookinfo(req,res){
+//
+// res=req
+//
+// .then(function (response) {
+//     res.status(200).send(response);
+// })
+// .catch(function (err) {
+//     res.status(400).send(err);
+// });
+//
+// }

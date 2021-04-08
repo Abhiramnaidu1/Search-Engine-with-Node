@@ -1,35 +1,151 @@
+<%- include('partials/header') %>
 <div class="row m-5">
     <div class="p-5">
-
+<button type="button" onclick="window.history.back()" name="button">back</button>
         <div class="col-lg-12 doc-middle-content">
+          <h2><%= bookinfo._source.title %></h2><br>
+            <strong>Author : </strong><p><%= bookinfo._source.contributor_author %></p><br>
+            <strong>Committee Member(s) : </strong><p><%= bookinfo._source.contributor_committeemember %></p><br>
+            <strong>Department : </strong><p><%= bookinfo._source.contributor_department %></p><br>
+            <strong>Date Issued : </strong><p><%= bookinfo._source.date_issued %></p><br>
+            <strong>Degree : </strong><p><%= bookinfo._source.degree_level %></p><br>
+            <strong>Advisors : </strong><p><%= bookinfo._source.description_provenance %></p><br>
+            <strong>Publisher : </strong><p><%= bookinfo._source.publisher %></p><br>
+            <strong>Subject(s) : </strong><p><%= bookinfo._source.subject %></p><br>
+            <!-- <strong><p>  <a href ="<%= bookinfo.identifier_sourceurl %>">Source URL </a></p><br> </strong>
+            <strong><p><a href ="<%= bookinfo.identifier_uri %>">Document URI</a></p><br> </strong> -->
+            <strong>Abstract : </strong><p><%= bookinfo._source.description_abstract %></p><br>
+            <div  class="hidden">
+              <p hidden id="id"><%= bookinfo._id %></p>
+            </div  >
 
-            <h2><%= bookinfo.title %></h2><br>
-            <strong>Committee Member(s) : </strong><p><%= bookinfo.contributor_committeemember %></p><br>
-            <strong>Department : </strong><p><%= bookinfo.contributor_department %></p><br>
-            <strong>Date Issued : </strong><p><%= bookinfo.date_issued %></p><br>
-            <strong>Degree : </strong><p><%= bookinfo.degree_name %></p><br>
-            <strong>Abstract : </strong><p><%= bookinfo.description_abstract %></p><br>
-            <strong>Publisher : </strong><p><%= bookinfo.publisher %></p><br>
-            <strong>Subject(s) : </strong><p><%= bookinfo.subject %></p><br>
-              <strong>Source URL : </strong><p>  <a href ="<%= bookinfo.identifier_sourceurl %>">URL</a></p><br>
-                <strong>document URI: </strong><p><a href ="<%= bookinfo.identifier_uri %>">URL</a></p><br>
-            <!-- <strong>Author : </strong><span><?php  echo printArrayValue($doc['_source']['contributor_author']);?></span><br>
-            <strong>Committee Chair(s) : </strong><span><?php
-                if(isset($doc['_source']['contributor_committeechair'])){
-                    echo printArrayValue($doc['_source']['contributor_committeechair']);
-                }else if (isset($doc['_source']['contributor_committeecochair'])){
-                    echo printArrayValue($doc['_source']['contributor_committeecochair']);
-                }
 
-            ?></span><br>
-            <strong>Committee Member(s) : </strong><span><?php  echo printArrayValue($doc['_source']['contributor_committeemember']);?></span><br>
-            <strong>Department : </strong><span><?php  echo printArrayValue($doc['_source']['contributor_department']);?></span><br>
-            <strong>Date Issued : </strong><span><?php  echo printArrayValue($doc['_source']['date_issued']);?></span><br>
-            <strong>Degree : </strong><span><?php  echo printArrayValue($doc['_source']['degree_name']);?></span><br>
-            <strong>Abstract : </strong><span><?php  echo printArrayValue($doc['_source']['description_abstract']);?></span><br>
-            <strong>Publisher : </strong><span><?php  echo printArrayValue($doc['_source']['publisher']);?></span><br>
-            <strong>Subject(s) : </strong><span><?php  echo printArrayValue($doc['_source']['subject']);?></span> -->
+
+
+  <ul>
+
+
+
+                <% var object = bookinfo._source.Claims; %>
+                <%  if (object === null ||object === undefined) { %>
+                    <p>No claims</p>
+             <%    } else { %>
+
+      <% for(var i = 0; i < bookinfo._source.Claims.length; i++) { %>
+         <strong>Claim<%= i+1 %></strong> <p> <%= bookinfo._source.Claims[i].claim %></p>
+          <p>Can you Reproduce :<%= bookinfo._source.Claims[i].reproduce %></p>
+          <p>Dataset : <%= bookinfo._source.Claims[i].datasets %></p>
+          <p>Experiments and Results : <%= bookinfo._source.Claims[i].experiments %></p>
+          <p>This Claim is posted by <%= bookinfo._source.Claims[i].name %></p>
+
+         <%  } %>
+ <%  } %>
+
+</ul>
+
 
         </div>
     </div>
+
+    <div class="mt-3"> <a data-toggle="collapse" href="#collapseExample" role="button" id=title aria-expanded="false" aria-controls="collapseExample" class="advanced"> Add Claim <i class="fa fa-angle-down"></i> </a>
+      <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <div class="row">
+            <form class="form group"  method="post">
+              <div class="form-group">
+                <label for="Claim">Claims</label>
+                <input type="text" name="Claim" id="Claim" class="form-control"  required />
+
+              </div>
+              <div class="form-group">
+                <label for="lastName">Source Code</label>
+                <input type="text" name="sourcecode" id="sourcecode" class="form-control"  required />
+              </div>
+              <div class="form-group">
+                <label for="dataset">Datasets</label>
+                <input type="text" name="dataset" id="dataset" class="form-control"  required />
+              </div>
+              <div class="form-group">
+                <label for="question">Can you reproduce this claim?</label>
+                <select id="reproduce">
+                     <option id="Yes" value="Yes">Yes</option>
+                     <option id="No" value="No">No</option>
+                     <option id="Partially"value="Partially">Partially</option>
+               </select>
+              </div>
+              <div class="form-group">
+                <label for="experiments">Experiments and results</label>
+                <input type="text"  id="experiments" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <button type="button" onclick="comment()" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+<div  class="col-lg-12 doc-middle-content">
+
 </div>
+
+    <div class="claim_result">
+
+    </div>
+
+
+
+
+
+</div>
+<script type="text/javascript">
+  var displayname = localStorage.getItem(displayname);
+  if (displayname === null||displayname === undefined){
+    displayname ="Anonymous"
+  }
+var uid = '<%= bookinfo._id %>';
+  function comment(){
+    var claim = document.getElementById('Claim').value;
+    var reproduce = document.getElementById('reproduce').value;
+    var sourcecode = document.getElementById('sourcecode').value;
+    var dataset = document.getElementById('dataset').value;
+    var experiments = document.getElementById('experiments').value;
+    var id = document.getElementById('id').value;
+    var name = displayname;
+    var claimobj = {
+      "id" : uid ,
+      "claim" :claim,
+      "name" : name,
+      'reproduce' : reproduce,
+      'sourcecode' : sourcecode,
+      'dataset' : dataset,
+      'experiments' : experiments
+    };
+    console.log(claimobj);
+    console.log(uid)
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+//window.location.reload();
+        //document.getElementById("demo").innerHTML = this.responseText;
+        console.log(this.responseText);
+      }
+    };
+  xhttp.open("POST", "/api/users/comment", true);
+ xhttp.setRequestHeader("Content-type", "application/json");
+xhttp.send(JSON.stringify(claimobj));
+
+// if (bookinfo._source.Claims ==! null){
+//   xhttp.open("POST", "/api/users/comment", true);
+//  xhttp.setRequestHeader("Content-type", "application/json");
+// xhttp.send(JSON.stringify(claimobj));
+// }
+// window.location.reload();
+}
+
+function goback(){
+  document.cookie ='ppkcookie1=testcookie; expires=Thu, 2 Aug 2001 20:47:11 UTC; path=/'
+}
+
+</script>

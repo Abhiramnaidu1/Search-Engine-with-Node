@@ -1,5 +1,5 @@
 <%- include('partials/header') %>
-<div align="right" class="form-group">
+<div align="center" class="form-group">
 
     <button class="btn btn-info"> <a href="/register"  >Register </a></button>
     <button class="btn btn-warning" type="button">  <a href="/login"  >Login</a></button>
@@ -25,7 +25,9 @@
 <script type="text/javascript">
 
       function searchTitles(){
-        localStorage.setItem('title',document.getElementById("title").value);
+        var Title = document.getElementById("title").value;
+        var titlestrip = Title.replace(/(<([^>]+)>)/gi, "");
+        localStorage.setItem('title',titlestrip);
          window.location.href='/api/users/serp';
 
 //   var title = document.getElementById("title").value;

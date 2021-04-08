@@ -2,7 +2,9 @@ var config = require('config.json');
 var express = require('express');
 var router = express.Router();
 var userService = require('services/user.service');
-var elastic =require('elastic/elastic.functions.js')
+var elastic =require('elastic/elastic.functions.js');
+var check = require('validator').check;
+var sanitize = require('validator').sanitize;
 // routes
 router.post('/authenticate', authenticateUser);
 router.post('/register', registerUser);
@@ -19,6 +21,10 @@ router.get('/serp',serp)
 router.get('/initial',initial)
 router.get('/getbook/:_id',getTitle)
 router.post('/advsearch',advsearch)
+router.get('/upload',upload)
+router.post('/create',create)
+router.post('/comment',comment)
+router.post('/newcomment',newcomment)
  // router.get('/bookinfo',bookinfo)
 module.exports = router;
 
@@ -101,7 +107,8 @@ function verifyToken(req,res){
     var userId = req.params.token
   userService.verifyToken(userId)
   .then(function () {
-      res.status(200).redirect('/login');
+      res.status(200)
+      res.redirect('/login');
   })
   .catch(function (err) {
       res.status(400).send(err);
@@ -152,7 +159,7 @@ function getTitle(req,res){
 
   .then(function (response) {
     console.log(response)
-    var book = response.hits.hits[0]._source
+    var book = response.hits.hits[0]
       console.log(book.title)
       res.status(200).render("bookinfo",{bookinfo:book});
       //.hits.hits[0]._source
@@ -178,11 +185,62 @@ elastic.advsearch(reqObj)
 });
 
 }
+
+function upload(req,res){
+
+  res.render("upload")
+
+}
+
+function create(req,res){
+  var reqobj=req.body;
+  console.log("user control");
+  console.log(reqobj);
+  elastic.createTitle(reqobj)
+
+  .then(function (response) {
+      res.status(200).send(response);
+  })
+  .catch(function (err) {
+      res.status(400).send(err);
+  });
+
+
+}
+
+function comment(req,res){
+  var reqobj=req.body;
+  console.log("comment");
+  console.log(reqobj);
+  elastic.comment(reqobj)
+
+  .then(function (response) {
+      res.status(200).send(response);
+  })
+  .catch(function (err) {
+      res.status(400).send(err);
+      console.log(err)
+  });
+}
+
+function newcomment(req,res){
+  var reqobj=req.body;
+  console.log("comment");
+  console.log(reqobj);
+  elastic.newcomment(reqobj)
+
+  .then(function (response) {
+      res.status(200).send(response);
+  })
+  .catch(function (err) {
+      res.status(400).send(err);
+  });
+}
 // function bookinfo(req,res){
 //
 // res=req
 //
-// .then(function (response) {
+//target="_self" .then(function (response) {
 //     res.status(200).send(response);
 // })
 // .catch(function (err) {

@@ -1,17 +1,30 @@
 const { Client } = require('elasticsearch');
 const client = new Client({ node: 'http://localhost:9200' });
+var generator = require('generate-password');
 
-//   async function createTitle() {
-//     const { response } = await client.create({
-//         index: 'data',
-//         id: 11,
-//         body: {
-//             title: 'My First title',
-//             author: 'Jaseem',
-//             date: new Date()
-//         }
-//     });
-// }
+ async function createTitle(userobj) {
+   console.log("========================================================");
+   console.log(userobj);
+   let randomid = generator.generate({
+   length: 10,
+   numbers: true
+   });
+   console.log(randomid)
+     return await client.create({
+       index: 'data',
+       id: randomid,
+         body: {
+            title: userobj.Title,
+            contributor_author: userobj.author,
+            publisher: userobj.publisher,
+            contributor_department: userobj.department,
+            date_issued: userobj.date_issued,
+            description_provenance: userobj.advisor,
+            degree_level: userobj.degree_level,
+            description_abstract:userobj.abstract
+        }
+    });
+ }
 //
 // // createTitle().catch(console.log);
   async function getTitle(id) {
@@ -26,6 +39,148 @@ const client = new Client({ node: 'http://localhost:9200' });
        }
    });
   }
+
+  async function newcomment( userobj) {
+  return await client.update({
+    index: 'data',
+    id: userobj.id,
+    body :{
+      doc:{
+        Claims:[{
+          claim :userobj.claim,
+           reproduce: userobj.reproduce,
+            name: userobj.name,
+            datasets: userobj.dataset,
+            experiments: userobj.experiments,
+            sourcecode: userobj.sourcecode
+        }]
+      }
+    }
+  });
+}
+  async function comment( userobj) {
+    console.log("========================================================");
+    console.log(userobj);
+//     var k =0;
+//     var userclaim = claim[k] ;
+// var obje = {
+//    userclaim: {
+//  reproduce: userobj.reproduce,
+//  name: userobj.name,
+//  datasets: userobj.dataset,
+//  experiments: userobj.experiments,
+//  sourcecode: userobj.sourcecode
+// }
+// };
+var total = {
+ claim :userobj.claim,
+  reproduce: userobj.reproduce,
+   name: userobj.name,
+   datasets: userobj.dataset,
+   experiments: userobj.experiments,
+   sourcecode: userobj.sourcecode
+};
+
+
+      return await client.update({
+        index: 'data',
+        id: userobj.id,
+          body: {
+             scripted_upsert: true,
+             script:"ctx._source.new_feild ='Claims'",
+            script: {
+
+                 lang:'painless',
+                 source:'(ctx._source.Claims != undefined)? (ctx._source.Claims.add(params.total)):(ctx._source.Claims.add[params.total]);',
+                   params:{total:total}
+
+
+   }
+   // upsert:{
+   //   doc:{
+   //     Claims:[{
+   //       total:total
+   //     }]
+   //   }
+   // }
+   }
+        });
+
+     }
+  //           {
+  // mappings: {
+  //    book : {
+  //      properties : {
+  //        Claims : {
+  //          properties : {
+  //            1 : {
+  //              properties : {
+  //                claim : {
+  //                  type :  text ,
+  //                  fields : {
+  //                    keyword : {
+  //                      type :  keyword ,
+  //                      ignore_above : 256
+  //                   }
+  //                 }
+  //               },
+  //                datasets : {
+  //                  type :  text ,
+  //                  fields : {
+  //                    keyword : {
+  //                      type :  keyword ,
+  //                      ignore_above : 256
+  //                   }
+  //                 }
+  //               },
+  //                experiments : {
+  //                  type :  text ,
+  //                  fields : {
+  //                    keyword : {
+  //                      type :  keyword ,
+  //                      ignore_above : 256
+  //                   }
+  //                 }
+  //               },
+  //                name : {
+  //                  type :  text ,
+  //                  fields : {
+  //                    keyword : {
+  //                      type :  keyword ,
+  //                      ignore_above : 256
+  //                   }
+  //                 }
+  //               },
+  //                reproduce : {
+  //                  type :  text ,
+  //                  fields : {
+  //                    keyword : {
+  //                      type :  keyword ,
+  //                      ignore_above : 256
+  //                   }
+  //                 }
+  //               },
+  //                sourcecode : {
+  //                  type :  text ,
+  //                 "fields": {
+  //                   "keyword": {
+  //                     "type": "keyword",
+  //                     "ignore_above": 256
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           },
+  //           "claim": {
+  //             "type": "text",
+  //             "fields": {
+  //               "keyword": {
+  //                 "type": "keyword",
+  //                 "ignore_above": 256
+  //               }
+  //             }
+  //           },
+
 //
 //     console.log(body);
 // }
@@ -72,6 +227,7 @@ const client = new Client({ node: 'http://localhost:9200' });
 // countTitles().catch(console.log);
 //const { body: response } =
  async function searchTitles(titlename) {
+
      return await client.search({
         index: 'data',
         body: {
@@ -140,8 +296,10 @@ console.log(searchQuery);
 console.log("========================================================");
     return await client.search(searchQuery);
 }
-
+service.newcomment = newcomment;
 service.searchTitles = searchTitles;
 service.getTitle = getTitle;
 service.advsearch=advsearch;
+service.createTitle = createTitle
+service.comment = comment;
 module.exports = service;

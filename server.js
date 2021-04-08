@@ -15,7 +15,7 @@ app.use(session({ secret: config.secret, resave: false, saveUninitialized: true 
 // use JWT auth to secure the api '/api/users/authenticate', '/api/users/register',
 app.use('/api', expressJwt({ secret: config.secret }).unless({ path: ['/api/users/authenticate', '/api/users/register',/^\/api\/users\/verifytoken\/.*/,
 '/api/users/resetpassword','/api/users/reset','/api/users/serp','/api/users/search','/api/users/initial',
-'/api/users/getbook/:id','/api/users/bookinfo',/^\/api\/users\/getbook\/.*/,] }));
+'/api/users/getbook/:id','/api/users/bookinfo',/^\/api\/users\/getbook\/.*/,"/api/users/upload","/api/users/create","/api/users/comment","/api/users/newcomment"] }));
 
 // routes
 app.use('/login', require('./controllers/login.controller'));

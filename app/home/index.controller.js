@@ -17,6 +17,7 @@
             UserService.GetCurrent().then(function (user) {
                 vm.user = user;
                 console.log(vm.user);
+                localstorage.setItem('userdetails',vm.user)
             });
         }
     }

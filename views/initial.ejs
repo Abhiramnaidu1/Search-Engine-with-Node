@@ -13,16 +13,49 @@
         <div class="alert alert-success"><%= success %></div>
     <% } %>
 
+<form class="" id="labanol" method="get" >
+  <div class="form-group">
 
-        <div class="form-group">
+      <input type="text" height= "30px" width= 50px placeholder="search a book" id="title" class="form-control" />
+      <img onclick="startSearch()" src="//i.imgur.com/cHidSVu.gif" />
+      <button type="button" class="btn btn-primary" onclick="searchTitles()" name="button">Go</button>
+  </div>
 
-            <input type="text" height= "30px" width= 50px placeholder="search a book" id="title" class="form-control" />
-            <button type="button" class="btn btn-primary" onclick="searchTitles()" name="button">Go</button>
-        </div>
+</form>
 
 
 </div>
+
 <script type="text/javascript">
+
+    function startSearch() {
+
+      if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+        var recognition = new webkitSpeechRecognition();
+
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.lang = "en-US";
+        recognition.start();
+
+        recognition.onresult = function(e) {
+          document.getElementById('title').value
+                                   = e.results[0][0].transcript;
+          recognition.stop();
+          // document.getElementById('title').submit;
+          searchTitles();
+        };
+
+        recognition.onerror = function(e) {
+          recognition.stop();
+
+        }
+
+      }
+    }
+
 
       function searchTitles(){
         var Title = document.getElementById("title").value;

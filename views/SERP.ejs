@@ -17,13 +17,14 @@
         <div class="form-group">
 
             <input type="text" placeholder="search a book" id="title" class="form-control" />
+            <img onclick="startSearch()" src="//i.imgur.com/cHidSVu.gif" />
             <button type="button" class="btn btn-primary" onclick="searchTitles()" name="button">Go</button>
         </div>
         </div>
 
 <div class="col-lg-12 doc-middle-content">
   <strong>
-  <div class="titles">
+  <div id="titlename" class="titles">
 
   </div>
   <div class="count">
@@ -31,39 +32,61 @@
   </div>
 
   <p>Matching Results</p>
-  <div class="pagination">
 
 
-  <div class = "results1"> </div>
-    <div class="mt-3"> <a data-toggle="collapse" href="#collapseExample" role="button"  aria-expanded="false" aria-controls="collapseExample"> Page 1 <i class="fa fa-angle-down"></i> </a>
-      <div class="collapse" id="collapseExample">
-        <div class="card card-body">
 
-            <div class="col-md-4 results1"> </div>
+<table id="example" class="display " style="width:100%">
+<thead>
+<tr>
 
-        </div>
-      </div>
-    </div>
-
-    <!-- <div  class="mt-3">
-<ul >
-<a data-toggle="collapse"  role="button" aria-expanded="false" aria-controls="collapseExample">page 1 <i class="fa fa-angle-down"></i> </a>
-  <li class="results1"></li></ul>
-  <li class="results2">page 2</li>
-  <li class="results3">page 3</li>
+  <td>Title</td>
+  <td>Author</td>
+  <td>Date Issued</td>
+</tr>
+</thead>
+        <tbody class="results" >
 
 
-    </div> -->
+
+</tbody>
+</table>
+
+
+
+
 
   </div>
-</div>
 
-
-</strong>
 
 
 <script type="text/javascript">
+  function startSearch() {
 
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+      var recognition = new webkitSpeechRecognition();
+
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(e) {
+        document.getElementById('title').value
+                                 = e.results[0][0].transcript;
+        recognition.stop();
+        // document.getElementById('title').submit;
+        searchTitles();
+      };
+
+      recognition.onerror = function(e) {
+        recognition.stop();
+
+      }
+
+    }
+  }
     window.onload=  function searchTitles(){
 
     var title = localStorage.getItem('title');
@@ -81,9 +104,7 @@
           console.log(this.responseText);
           var response=JSON.parse(this.responseText);
           var hits=response.hits.hits;
-          var results1=document.getElementsByClassName('results1')[0];
-          var results2=document.getElementsByClassName('results2')[0];
-          var results3=document.getElementsByClassName('results3')[0];
+          var results=document.getElementsByClassName('results')[0];
 
           var titles = document.getElementsByClassName('titles')[0];
           titles.innerHTML='<p> searching for: '+userObj.title+'</p>';
@@ -95,49 +116,47 @@
 
           for (var i in hits ){
 
-            var div=document.createElement('div');
+            var tr=document.createElement('tr');
             console.log(userObj.title);
 
-            div.setAttribute('class','item');
-            div.innerHTML='<p>'+k+') '+'<a href=/api/users/getbook/'+hits[i]._id+'>'+hits[i]._source.title+'\n'+'</a></p>';
+            tr.setAttribute('class','dataTable');
+            var titlename = userObj.title;
 
 
-            if(k<11){
-            results1.appendChild(div);
-          }
+            var patt = new RegExp(titlename, "gi");
+            console.log(patt)
+            var dummy='<td>'+'<a href=/api/users/getbook/'+hits[i]._id+'>'+hits[i]._source.title+'\n'+'</a></td> <td>'+hits[i]._source.contributor_author+'</td><td> '+hits[i]._source.date_issued+'</td>';
+            dummy=dummy.replace(patt,"<mark>"+userObj.title+"</mark>");
+               tr.innerHTML = dummy;
 
-          if(k>11 && k<21){
-            results2.appendChild(div);
-          }
-       if(k>21 &&k<31){
-      results3.appendChild(div);
-    }
-    if(k>31 &&k<41){
-   results3.appendChild(div);
- }
- if(k>41 &&k<51){
-results3.appendChild(div);
-}
-if(k>51 &&k<61){
-results3.appendChild(div);
-}
-if(k>61 &&k<71){
-results3.appendChild(div);
-}
+
+            results.appendChild(tr);
+
+
+
       k+=1;
        }
+pagination()
+     }
 
-          var data = pagination(dataset,1,10);
-          console.log('Data: ',data)
 
-        }
   };
+
 
       xhttp.open("GET", "/api/users/search?title="+title, true);
      xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.send();
 
+
+
 }
+
+function pagination() {
+    $('#example').DataTable();
+    response: true;
+    searching : false;
+    pagingType: "full_numbers"
+} ;
 
 
 function searchTitles(){
@@ -148,16 +167,7 @@ localStorage.setItem('title',titlestrip);
  }
 
 
-function pagination(queryset,page, rows){
-  var trimstart = (page -1)* rows
-  var trimend = trimstart + rows
-  var trimmed = queryset.slice(trimstart,trimend)
-  var pages = Math.ceil(queryset.length /rows)
-  return{
-    'queryset': trimmed,
-    'pages' : pages
-  }
-}
+
 </script>
 
 <%- include('partials/footer') %>

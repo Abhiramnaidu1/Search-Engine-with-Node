@@ -24,9 +24,39 @@ router.post('/advsearch',advsearch)
 router.get('/upload',upload)
 router.post('/create',create)
 router.post('/comment',comment)
+router.post('/like',like)
+router.post('/unlike',unlike)
 router.post('/newcomment',newcomment)
+router.get('/favbook',favbook)
+router.post('/savebook',savebook)
+router.post('/removebook',removebook)
  // router.get('/bookinfo',bookinfo)
 module.exports = router;
+
+function removebook(req, res) {
+    userService.removebook(req.body)
+        .then(function (obj) {
+
+            res.send(obj);
+
+        })
+
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+function savebook(req, res) {
+    userService.savebook(req.body)
+        .then(function (obj) {
+
+            res.send(obj);
+
+        })
+
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
 
 function authenticateUser(req, res) {
     userService.authenticate(req.body.username, req.body.password)
@@ -134,11 +164,15 @@ function searchTitles(req,res){
 
   .then(function (response) {
       res.status(200).send(response);
+
+
   })
   .catch(function (err) {
       res.status(400).send(err);
   });
 }
+
+
 
 function serp(req,res){
 
@@ -223,6 +257,36 @@ function comment(req,res){
   });
 }
 
+function like(req,res){
+  var reqobj=req.body;
+  console.log("like");
+  console.log(reqobj);
+  elastic.like(reqobj)
+
+  .then(function (response) {
+      res.status(200).send(response);
+  })
+  .catch(function (err) {
+      res.status(400).send(err);
+      console.log(err)
+  });
+}
+
+function unlike(req,res){
+  var reqobj=req.body;
+  console.log("unlike");
+  console.log(reqobj);
+  elastic.unlike(reqobj)
+
+  .then(function (response) {
+      res.status(200).send(response);
+  })
+  .catch(function (err) {
+      res.status(400).send(err);
+      console.log(err)
+  });
+}
+
 function newcomment(req,res){
   var reqobj=req.body;
   console.log("comment");
@@ -235,6 +299,11 @@ function newcomment(req,res){
   .catch(function (err) {
       res.status(400).send(err);
   });
+}
+function favbook(req,res){
+
+  res.render('favbook');
+
 }
 // function bookinfo(req,res){
 //

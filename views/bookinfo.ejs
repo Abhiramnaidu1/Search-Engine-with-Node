@@ -12,6 +12,11 @@
             <strong>Advisors : </strong><p><%= bookinfo._source.description_provenance %></p><br>
             <strong>Publisher : </strong><p><%= bookinfo._source.publisher %></p><br>
             <strong>Subject(s) : </strong><p><%= bookinfo._source.subject %></p><br>
+            <p id="pdffile" hidden>
+              C:\Users\Hellrider\Downloads\cs518data\dissertation\<%=bookinfo._source.handle%>\<%=bookinfo._source.relation_haspart%> --disable-web-security
+            </p>
+            <!-- <button type="button" onclick='window.location.assign("\/<%=bookinfo._source.handle%>\/<%=bookinfo._source.relation_haspart%>")' target="_blank" name="button">Download</button><br> -->
+            <a href="\<%=bookinfo._source.handle%>\<%=bookinfo._source.relation_haspart%>" target="_blank">downloads</a> <br>
             <!-- <strong><p>  <a href ="<%= bookinfo.identifier_sourceurl %>">Source URL </a></p><br> </strong>
             <strong><p><a href ="<%= bookinfo.identifier_uri %>">Document URI</a></p><br> </strong> -->
             <strong>Abstract : </strong><p><%= bookinfo._source.description_abstract %></p><br>
@@ -32,13 +37,13 @@
              <%    } else { %>
 
       <% for(var i = 0; i < bookinfo._source.Claims.length; i++) { %>
-         <strong>Claim<%= i+1 %></strong> <p> <%= bookinfo._source.Claims[i].claim %></p>
+         <strong id="<%=i%>">Claim<%= i+1 %></strong> <p> <%= bookinfo._source.Claims[i].claim %></p>  <button type="button" onclick="like(<%=i%>)" name="button">Like</button> <button onclick="dislike(<%=i%>)" type="button" name="button">Dislike</button>
           <p>Can you Reproduce :<%= bookinfo._source.Claims[i].reproduce %></p>
           <p>Dataset : <%= bookinfo._source.Claims[i].datasets %></p>
           <p>Experiments and Results : <%= bookinfo._source.Claims[i].experiments %></p>
           <p>This Claim is posted by <%= bookinfo._source.Claims[i].name %></p>
+ <%  } %>
 
-         <%  } %>
  <%  } %>
 
 </ul>
@@ -100,7 +105,10 @@
 
 </div>
 <script type="text/javascript">
-  var displayname = localStorage.getItem(displayname);
+  var userdetails = JSON.parse(localStorage.getItem("userdetails"));
+  var displayname = userdetails.firstName;
+
+  console.log(displayname);
   if (displayname === null||displayname === undefined){
     displayname ="Anonymous"
   }
@@ -141,11 +149,73 @@ xhttp.send(JSON.stringify(claimobj));
 //  xhttp.setRequestHeader("Content-type", "application/json");
 // xhttp.send(JSON.stringify(claimobj));
 // }
-// window.location.reload();
+ window.location.reload();
 }
 
 function goback(){
   document.cookie ='ppkcookie1=testcookie; expires=Thu, 2 Aug 2001 20:47:11 UTC; path=/'
 }
+function run(){
 
+   var pdfdoc = document.getElementById('pdffile').value;
+
+   window.location.assign(pdfdoc);
+
+}
+
+  var mailid = userdetails.username;
+
+function like(k){
+  if (mailid == undefined){
+    alert('You need to login for liking this claim')
+  }
+  else {
+
+    var claimid = k;
+    var id = document.getElementById('id').innerHTML;
+    var obj={
+      mailid :mailid,
+      id : id,
+      claimid :claimid
+    }
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+//window.location.reload();
+        //document.getElementById("demo").innerHTML = this.responseText;
+        console.log(this.responseText);
+      }
+    };
+  xhttp.open("POST", "/api/users/like", true);
+ xhttp.setRequestHeader("Content-type", "application/json");
+xhttp.send(JSON.stringify(obj));
+  }
+}
+
+function dislike(k){
+  if (mailid == undefined){
+    alert('You need to login for liking this claim')
+  }
+  else {
+
+    var claimid = k;
+    var id = document.getElementById('id').value;
+    var obj={
+      mailid :mailid,
+      id : id,
+      claimid :claimid
+    }
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+  //window.location.reload();
+        //document.getElementById("demo").innerHTML = this.responseText;
+        console.log(this.responseText);
+      }
+    };
+  xhttp.open("POST", "/api/users/unlike", true);
+  xhttp.setRequestHeader("Content-type", "application/json");
+  xhttp.send(JSON.stringify(obj));
+  }
+}
 </script>

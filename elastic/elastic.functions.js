@@ -33,7 +33,9 @@ var generator = require('generate-password');
        body: {
            query: {
                match: {
-                   _id: id
+                   _id:  id
+
+
                }
            }
        }
@@ -52,12 +54,83 @@ var generator = require('generate-password');
             name: userobj.name,
             datasets: userobj.dataset,
             experiments: userobj.experiments,
-            sourcecode: userobj.sourcecode
+            sourcecode: userobj.sourcecode,
+            like : ["1","2"],
+            unlike : ["1","2"]
+
         }]
       }
     }
   });
 }
+
+
+async function like(userobj) {
+  var liked =userobj.mailid;
+  var k = userobj.claimid;
+  return await client.update({
+    index: 'data',
+    id: userobj.id,
+      body: {
+
+
+        script: {
+
+             lang:'painless',
+             source:"if (ctx._source.Claims[params.k].unlike.contains(params['liked'])) { ctx._source.Claims[params.k].unlike.remove(ctx._source.Claims[params.k].unlike.indexOf(params['liked'])), ctx._source.Claims[params.k].like.add(params.liked) } else if(! ctx._source.Claims[params.k].like.contains(params['liked'])) {ctx._source.Claims[params.k].like+=params.liked};",
+
+               params:{
+                 liked:liked,
+                 k :k
+
+                 }
+             }
+
+
+}
+
+
+    });
+
+}
+
+
+async function unlike(userobj) {
+  var unliked =userobj.mailid;
+  var k = userobj.claimid;
+  return await client.update({
+    index: 'data',
+    id: userobj.id,
+      body: {
+         scripted_upsert: true,
+
+        script: {
+
+             lang:'painless',
+             source:"if (ctx._source.Claims[params.k].like.contains(params['unliked'])) { ctx._source.Claims[params.k].like.remove(ctx._source.Claims[params.k].like.indexOf(params['unliked'])), ctx._source.Claims[params.k].unlike.add(params.unliked) } else{ctx._source.Claims[params.k].unlike.add(params.unliked)};",
+
+               params:{
+                 unliked:unliked,
+                 k :k
+
+                 }
+             },
+             upsert:{
+               doc:{
+                 Claims:[{
+                   total
+                 }]
+               }
+             }
+
+}
+
+
+    });
+
+}
+
+
   async function comment( userobj) {
     console.log("========================================================");
     console.log(userobj);
@@ -79,6 +152,7 @@ var total = {
    datasets: userobj.dataset,
    experiments: userobj.experiments,
    sourcecode: userobj.sourcecode
+
 };
 
 
@@ -87,23 +161,28 @@ var total = {
         id: userobj.id,
           body: {
              scripted_upsert: true,
-             script:"ctx._source.new_feild ='Claims'",
+
             script: {
 
                  lang:'painless',
-                 source:'(ctx._source.Claims != undefined)? (ctx._source.Claims.add(params.total)):(ctx._source.Claims.add[params.total]);',
-                   params:{total:total}
+                 source:'if(ctx._source.Claims != undefined){ (ctx._source.Claims.add(params.total))} else{ctx._source.Claims=[params.total]};',
+               source:'ctx._source.Claims.add(params.total)',
+                   params:{
+                     total:total
 
+                     }
+                 },
+                 upsert:{
+                   doc:{
+                     Claims:[{
+                       total
+                     }]
+                   }
+                 }
 
    }
-   // upsert:{
-   //   doc:{
-   //     Claims:[{
-   //       total:total
-   //     }]
-   //   }
-   // }
-   }
+
+
         });
 
      }
@@ -233,7 +312,10 @@ var total = {
         body: {
             query: {
                 match: {
-                    title: titlename
+                    title:{
+                      query: titlename,
+                    fuzziness:1
+                  }
                 }
             },
               size:"10000"
@@ -253,6 +335,7 @@ async function advsearch(userObj) {
                must: []
                    }
                 },
+
                 size:"10000"
             }
 
@@ -262,7 +345,7 @@ var must=searchQuery.body.query.bool.must;
 if (userObj.title != undefined && userObj.title != null&&userObj.title != "") {
   var obj = {
     match: {
-      title: userObj.title
+      title: {query:userObj.title, fuzziness:1}
     }
   };
   must.push(obj);
@@ -270,7 +353,7 @@ if (userObj.title != undefined && userObj.title != null&&userObj.title != "") {
 if (userObj.Author != undefined && userObj.Author != null&&userObj.Author != "") {
   var obj = {
     match: {
-      contributor_author: userObj.Author
+      contributor_author: {query: userObj.Author, fuzziness:1}
     }
   };
   must.push(obj);
@@ -278,7 +361,7 @@ if (userObj.Author != undefined && userObj.Author != null&&userObj.Author != "")
 if (userObj.Department != undefined && userObj.Department != null&&userObj.Department != "") {
   var obj = {
     match: {
-      contributor_department: userObj.Department
+      contributor_department:{query: userObj.Department, fuzziness:1}
     }
   };
   must.push(obj);
@@ -286,7 +369,7 @@ if (userObj.Department != undefined && userObj.Department != null&&userObj.Depar
 if (userObj.Description != undefined && userObj.Description != null&&userObj.Description != "") {
   var obj = {
     match: {
-      description_abstract: userObj.Description
+      description_abstract: {query: userObj.Description, fuzziness:1}
     }
   };
   must.push(obj);
@@ -302,4 +385,6 @@ service.getTitle = getTitle;
 service.advsearch=advsearch;
 service.createTitle = createTitle
 service.comment = comment;
+service.like = like;
+service.unlike = unlike;
 module.exports = service;

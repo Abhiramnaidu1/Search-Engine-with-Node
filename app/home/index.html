@@ -2,9 +2,11 @@
 <h4 id="firstname">{{vm.user.firstName}}</h4><br>
 
 <h1 align="left">SEARCH ENGINE</h1>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.css"/>
 
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/datatables.min.js"></script>
 <div class="form-group">
-  <input type="text" id="title" class="col-md-6" align="center" placeholder="Search a book">
+  <input type="text" id="title" class="col-md-6" align="center" placeholder="Search a book"><img onclick="startSearch()" src="//i.imgur.com/cHidSVu.gif" />
 
   <button class="btn btn-primary" onclick="advsearch()" type="submit" name="button">go</button>
   <!-- <button class ="search-btn" type="button"> </button> -->
@@ -16,9 +18,9 @@
   <div class="collapse" id="collapseExample">
     <div class="card card-body">
       <div class="row">
-        <div class="col-md-4"> <input type="text" id="Description" placeholder="Search in description" class="form-control"> </div>
-        <div class="col-md-4"> <input type="text" id="Author" class="form-control" placeholder="Search by Author"> </div>
-        <div class="col-md-4"> <input type="text" id="Department" class="form-control" placeholder="Search by Departmrnt"> </div>
+        <div class="col-md-4"> <input type="text" id="Description" placeholder="Search in description" class="form-control"><img onclick="startSearchD()" src="//i.imgur.com/cHidSVu.gif" /> </div>
+        <div class="col-md-4"> <input type="text" id="Author" class="form-control" placeholder="Search by Author"><img onclick="startSearcha()" src="//i.imgur.com/cHidSVu.gif" /> </div>
+        <div class="col-md-4"> <input type="text" id="Department" class="form-control" placeholder="Search by Departmrnt"><img onclick="startSearchde()" src="//i.imgur.com/cHidSVu.gif" /> </div>
       </div>
     </div>
   </div>
@@ -32,21 +34,143 @@
   </div>
 
 
-  <div class="results">
+  <table id="advtable" class="display " style="width:100%">
+  <thead>
+  <tr>
 
-  </div>
+    <td>Title</td>
+    <td>Author</td>
+    <td>Date Issued</td>
+    <td>Save Document</td>
+  </tr>
+  </thead>
+          <tbody class="results" >
+
+
+
+  </tbody>
+  </table>
+
 </strong>
 
-
 <script type="text/javascript">
+  var data = [];
+  function startSearch() {
+
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+      var recognition = new webkitSpeechRecognition();
+
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(e) {
+        document.getElementById('title').value
+                                 = e.results[0][0].transcript;
+        recognition.stop();
+        // document.getElementById('title').submit;
+
+      };
+
+      recognition.onerror = function(e) {
+        recognition.stop();
+
+      }
+
+    }
+  }
+  function startSearchD() {
+
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+      var recognition = new webkitSpeechRecognition();
+
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(e) {
+        document.getElementById('Description').value
+                                 = e.results[0][0].transcript;
+        recognition.stop();
+        // document.getElementById('title').submit;
+
+      };
+
+      recognition.onerror = function(e) {
+        recognition.stop();
+
+      }
+
+    }
+  }
+  function startSearcha() {
+
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+      var recognition = new webkitSpeechRecognition();
+
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(e) {
+        document.getElementById('Author').value
+                                 = e.results[0][0].transcript;
+        recognition.stop();
+        // document.getElementById('title').submit;
+
+      };
+
+      recognition.onerror = function(e) {
+        recognition.stop();
+
+      }
+
+    }
+  }
+  function startSearchde() {
+
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+      var recognition = new webkitSpeechRecognition();
+
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(e) {
+        document.getElementById('Department').value
+                                 = e.results[0][0].transcript;
+        recognition.stop();
+        // document.getElementById('title').submit;
+
+      };
+
+      recognition.onerror = function(e) {
+        recognition.stop();
+
+      }
+
+    }
+  }
 
   window.onload = function advsearch() {
 
-    var displayname = document.getElementById('firstname').value;
-    localStorage.setItem('displayname',displayname);
+    var displayname = document.getElementById('firstname').innerHTML;
+    localStorage.SetItem('displayname',displayname);
 
-
-
+console.log(displayname);
+console.log(localStorage.getItem('displayname'));
 
     var advtitle = localStorage.getItem('advtitle');
     var descriptionst = localStorage.getItem('description');
@@ -77,22 +201,29 @@
         results.innerHTML = "";
 
         var titles = document.getElementsByClassName('titles')[0];
-        titles.innerHTML = '<p> Searching for: title:<h6>' + userObj.title + ',</h6> Description:<h6>' + userObj.Description + ',</h6> Author:<h6>' + userObj.Author + ',</h6> Department:<h6>' + userObj.Department + '</h6></p>';
+        titles.innerHTML = '<p> Searching for: title  <strong>' + userObj.title + '</strong>'+',  Description:' + userObj.Description + ',  Author:' + userObj.Author + ',  Department:' + userObj.Department + '</p>';
         var k = 1;
         var count = response.hits.total.value;
         var counts = document.getElementsByClassName('count')[0];
 
         counts.innerHTML = '<p>' + 'Total matches:' + count + '<br /> Matching Results:</p>';
-        for (var i in hits) {
-          var div = document.createElement('div');
+        for (var i in hits ){
 
+          var tr=document.createElement('tr');
+          console.log(userObj.title);
 
-          div.setAttribute('class', 'item');
-          div.innerHTML = '<p>' + k + ') ' + '<a href=/api/users/getbook/' + hits[i]._id + '>' + hits[i]._source.title + '\n' + '</a></p>';
-          k += 1;
-          results.appendChild(div);
+          tr.setAttribute('class','dataTable');
+          var titlename = userObj.title;
+          var patt = new RegExp(titlename, "gi");
+                    dummy='<td>'+'<a href=/api/users/getbook/'+hits[i]._id+'>'+hits[i]._source.title+'\n'+'</a></td> <td>'+hits[i]._source.contributor_author+'</td><td> '+hits[i]._source.date_issued+'</td><td>if ()<button type="button" onclick="savebook('+i+')" name="button">Save</button></td>';
+                    dummy=dummy.replace(patt,"<mark>"+userObj.title+"</mark>");
+                    tr.innerHTML= dummy;
+
+          results.appendChild(tr);
+
+          k+=1;
         }
-
+pagination()
       }
     };
 
@@ -101,10 +232,8 @@
     xhttp.setRequestHeader("Authorization", "Bearer " + token);
     xhttp.send(JSON.stringify(userObj));
 
-
-
   }
-
+var saveContent=[];
   function advsearch() {
     var displayname = localStorage.getItem('userdetails')
 
@@ -149,22 +278,33 @@
         results.innerHTML = "";
 
         var titles = document.getElementsByClassName('titles')[0];
-        titles.innerHTML = '<p> Searching for: title:<h6>' + userObj.title + ',</h6> Description:<h6>' + userObj.Description + ',</h6> Author:<h6>' + userObj.Author + ',</h6> Department:<h6>' + userObj.Department + '</h6></p>';
+        titles.innerHTML = '<p> Searching for: title:' + userObj.title + ', Description:' + userObj.Description + ', Author:' + userObj.Author + ', Department:' + userObj.Department + '</p>';
         var k = 1;
         var count = response.hits.total.value;
         var counts = document.getElementsByClassName('count')[0];
 
         counts.innerHTML = '<p>' + 'Total matches:' + count + '<br /> Matching Results:</p>';
-        for (var i in hits) {
-          var div = document.createElement('div');
+        for (var i in hits ){
+
+          var tr=document.createElement('tr');
+          console.log(userObj.title);
+
+          tr.setAttribute('class','dataTable');
+          tr.setAttribute('id',i);
+          var titlename = userObj.title;
+var patt = new RegExp(titlename, "gi");
+          dummy='<td>'+'<a href=/api/users/getbook/'+hits[i]._id+'>'+hits[i]._source.title+'\n'+'</a></td> <td>'+hits[i]._source.contributor_author+'</td><td> '+hits[i]._source.date_issued+'</td><td><button type="button" onclick="savebook('+i+')" name="button">Save</button></td>';
+          saveContent.push({id:hits[i]._id,text:'<tr id="'+hits[i]._id+'"><td>'+'<a href=/api/users/getbook/'+hits[i]._id+'>'+hits[i]._source.title+'\n'+'</a></td> <td>'+hits[i]._source.contributor_author+'</td><td> '+hits[i]._source.date_issued+'</td><td><button type="button" onclick="removebook(\''+hits[i]._id+'\')" name="button">Delete</button></td></tr>'})
+          dummy=dummy.replace(patt,"<mark>"+userObj.title+"</mark>");
+          tr.innerHTML= dummy;
 
 
-          div.setAttribute('class', 'item');
-          div.innerHTML = '<p>' + k + ') ' + '<a href=/api/users/getbook/' + hits[i]._id + '>' + hits[i]._source.title + '\n' + '</a></p>';
-          k += 1;
-          results.appendChild(div);
+
+          results.appendChild(tr);
+
+        k+=1;
         }
-
+pagination()
       }
     };
 
@@ -172,8 +312,78 @@
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.setRequestHeader("Authorization", "Bearer " + token);
     xhttp.send(JSON.stringify(userObj));
+  }
+
+  function savebook(id){
+    var fulltitle = saveContent[id];
+    var userdetails = JSON.parse(localStorage.getItem('userdetails'));
+    var uid = userdetails._id;
+console.log(userdetails)
+
+var token = window.jwtToken;
+var userobj ={
+  bookdetails : fulltitle,
+  id :uid,
+
+
+}
+console.log(userobj);
+if (token == undefined) {
+  window.location.href = '/login';
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    console.log("response")
 
 
 
-  };
+  }
+}
+xhttp.open("POST", "/api/users/savebook", true);
+xhttp.setRequestHeader("Content-type", "application/json");
+xhttp.setRequestHeader("Authorization", "Bearer " + token);
+xhttp.send(JSON.stringify(userobj));
+
+}
+
+function removebook(id,bookid){
+  var fulltitle = document.getElementById(id).innerHTML;
+  var userdetails = JSON.parse(localStorage.getItem('userdetails'));
+  var uid = userdetails._id;
+console.log(userdetails)
+
+var token = window.jwtToken;
+var userobj ={
+bookdetails : fulltitle,
+id :uid,
+
+
+}
+console.log(userobj);
+if (token == undefined) {
+window.location.href = '/login';
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+  console.log("response")
+
+
+
+}
+}
+xhttp.open("POST", "/api/users/removebook", true);
+xhttp.setRequestHeader("Content-type", "application/json");
+xhttp.setRequestHeader("Authorization", "Bearer " + token);
+xhttp.send(JSON.stringify(userobj));
+}
+
+  function pagination() {
+      $('#advtable').DataTable();
+      response: true;
+      searching : false;
+  } ;
 </script>
